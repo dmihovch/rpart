@@ -1,5 +1,5 @@
-all: main.c src/physics.c src/drawing.c src/particle.c
-	gcc -o rpart main.c src/drawing.c src/physics.c src/particle.c -lraylib -lm -ldl -pthread
+all: main.c src/physics.c src/drawing.c src/particle.c src/maths.c
+	gcc -o rpart main.c src/drawing.c src/physics.c src/particle.c src/maths.c -lraylib -lm -ldl -pthread
 
 clean: rpart
 	rm rpart
