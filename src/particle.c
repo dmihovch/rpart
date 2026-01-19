@@ -1,4 +1,6 @@
 #include "../include/particle.h"
+#include <raylib.h>
+#include <raymath.h>
 
 Particle* alloc_rand_nparticles(int n)
 {
@@ -19,25 +21,17 @@ Particle* alloc_rand_nparticles(int n)
 
 Particle create_rand_particle()
 {
-	Particle p;
-	p.x = rand_float(0,WIDTH);
-	p.y = rand_float(0,HEIGHT);
-	p.vx = rand_float(-2.0,2.0);
-	p.vy = rand_float(-2.0,2.0);
-	p.r = 3.;
-	p.col = rand_color();
-	return p;
+	return (Particle)
+	{
+		.pos = (Vector2){rand_float(0,WIDTH),rand_float(0,HEIGHT)},
+		.vel = (Vector2){rand_float(-2.0,2.0),rand_float(-2.0,2.0)},
+		.acc = (Vector2){0,0},
+		.r = 3.,
+		.color = rand_color(),
+	};
 }
 
-float rand_float(float tmin, float tmax)
-{
-	float rmin = 0.;
-	float rmax = 1.;
-	float ret = (float)rand()/RAND_MAX;
-	ret = ret - rmin;
-	ret = ret / (rmax - rmin);
-	return ret * (tmax - tmin) + tmin;
-}
+
 
 Color rand_color()
 {

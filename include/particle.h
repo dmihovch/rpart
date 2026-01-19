@@ -2,12 +2,15 @@
 #define PARTICLE_H
 #include <stdlib.h>
 #include "raylib.h"
-#include "raymath.h"
 #include "constants.h"
+#include "maths.h"
 #include "time.h"
 typedef struct {
-	float x,y,vx,vy,r;
-	Color col;
+	Vector2 pos;
+	Vector2 vel;
+	Vector2 acc;
+	float r;
+	Color color;
 }Particle;
 Particle* alloc_rand_nparticles(int n);
 Particle create_rand_particle();

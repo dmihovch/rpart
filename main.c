@@ -2,9 +2,6 @@
 #include "include/particle.h"
 #include "include/physics.h"
 
-#define FPS 144
-
-#define PARTICLES 1000
 
 int main(int argc, char** argv){
 	InitWindow(WIDTH, HEIGHT, "Particle Simulation [ NAIVE ]");
