@@ -15,7 +15,8 @@ typedef struct {
 float rand_float(float tmin, float tmax);
 void vec2_add_ip(Vector2* res, Vector2 v);
 void vec2_sub_ip(Vector2* res, Vector2 v);
+Vector2 vec2_sub(Vector2 a, Vector2 b);
 void vec2_negate_ip(Vector2* v);
 void vec2_zero(Vector2* v);
-
+float vec2_dot(Vector2 a, Vector2 b);
 #endif //MATHS_H

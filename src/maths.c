@@ -34,3 +34,17 @@ void vec2_zero(Vector2* v)
 	v->x = 0;
 	v->y = 0;
 }
+
+float vec2_dot(Vector2 a, Vector2 b)
+{
+	return (a.x * b.x) + (a.y * b.y);
+}
+
+Vector2 vec2_sub(Vector2 a, Vector2 b)
+{
+	return (Vector2)
+	{
+		a.x - b.x,
+		a.y - b.y,
+	};
+}

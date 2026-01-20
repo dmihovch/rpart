@@ -65,25 +65,32 @@ void handle_particle_collisions(Particle* p, int particle_count)
 	{
 		for(int j = i+1; j<particle_count; ++j)
 		{
-			//handle particle collisions
+			if(check_collisions_circles(p[i].pos, p[i].r, p[j].pos, p[j].r))
+			{
+				//handle collision
+			}
 		}
 	}
 }
 
-void dep_update_particles(Particle* p, int particle_count)
+bool check_collisions_circles(Vector2 apos, float ar, Vector2 bpos, float br)
 {
-
-	for(int i = 0; i<particle_count; i++)
-	{
-		for(int j = 0; j<particle_count; j++)
-		{
-			if(i == j)continue;
-			
-			if(CheckCollisionCircles(p[i].pos, p[i].r, p[j].pos ,p[j].r))
-			{
-				vec2_negate_ip(&p[i].vel);
-			}
-		}			
-	}
-	
+	Vector2 dist = vec2_sub(apos, bpos);
+	float distsq = vec2_dot(dist,dist);
+	float rsq = (ar+br) * (ar*br);
+	return distsq <= rsq;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
