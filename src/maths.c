@@ -1,6 +1,15 @@
 #include "../include/maths.h"
 #include <raylib.h>
 
+float rand_float_nonzero(float tmin, float tmax)
+{
+	float rand = rand_float(tmin,tmax);
+	if(rand == 0.0f)
+	{
+		return 0.0001;
+	}
+	return rand;
+}
 float rand_float(float tmin, float tmax)
 {
 	float rmin = 0.;

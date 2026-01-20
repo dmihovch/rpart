@@ -61,15 +61,15 @@ void move_particles_handle_walls(Particle* p, int particle_count)
 
 void handle_particle_collisions(Particle* p, int particle_count)
 {
-	Vector2 normal = {0,0};
 	for(int i = 0; i < particle_count; ++i)
 	{
 		for(int j = i+1; j<particle_count; ++j)
 		{
 			
-			normal = check_collisions_circles(p[i].pos, p[i].r, p[j].pos, p[j].r);
-			if(normal.x != 0 && normal.y != 0){
-				//handle collision
+			Vector2 normal = check_collisions_circles(p[i].pos, p[i].r, p[j].pos, p[j].r);
+			if(normal.x != 0 && normal.y != 0){ //collision occured
+				Vector2 relative_vel = vec2_sub(p[i].vel, p[j].vel);
+				//need to read that doc
 			}
 		}
 	}
@@ -79,12 +79,20 @@ Vector2 check_collisions_circles(Vector2 apos, float ar, Vector2 bpos, float br)
 {
 	Vector2 delta = vec2_sub(apos, bpos);
 	float distsq = vec2_dot(delta,delta);
-	float rsq = (ar+br) * (ar*br);
+	float rsq = (ar+br) * (ar+br);
 	if(distsq >= rsq)
 	{
 		return (Vector2){0,0};
 	}
-	if(distsq == 0) return (Vector2){1,0};
+	if(distsq == 0.)
+	{
+		return (Vector2)
+		{
+			rand_float_nonzero(-1, 1),
+			rand_float_nonzero(-1,1)
+		};
+	} 
+
 	float dist = sqrtf(distsq);
 	return (Vector2){delta.x/dist, delta.y/dist};
 }
