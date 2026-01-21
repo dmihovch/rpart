@@ -69,8 +69,9 @@ void handle_particle_collisions(Particle* p, int particle_count)
 			Vector2 normal = check_collisions_circles(&scalar_dist,p[i].pos, p[i].r, p[j].pos, p[j].r);
 			if(collision_occured(normal)){
 				float impulse = calculate_impulse(p[i], p[j], normal);
-				vec2_scalar_mult_ip(&p[i].vel, impulse);
-				vec2_scalar_mult_ip(&p[j].vel, -impulse);
+				Vector2 impulse_vector = vec2_scalar_mult(normal, impulse);
+				vec2_add_ip(&p[i].vel, vec2_scalar_mult(impulse_vector, 1/p[i].m));
+				vec2_add_ip(&p[j].vel, vec2_scalar_mult(impulse_vector, -(1/p[j].m)));
 				handle_penetration(&p[i], &p[j], normal, scalar_dist);
 			}
 		}
@@ -97,7 +98,7 @@ float calculate_impulse(Particle a, Particle b, Vector2 normal)
 	Vector2 relative_vel = vec2_sub(a.vel, b.vel);
 	float relative_normal = vec2_dot(relative_vel,normal);
 	float inverse_masses = (1/a.m) + (1/b.m);
-	float neg1plusE = (-1 + ELASTICITY);
+	float neg1plusE = -(1 + ELASTICITY);
 	return (neg1plusE * relative_normal) / inverse_masses;
 }
 
