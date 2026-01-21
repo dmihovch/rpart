@@ -70,6 +70,7 @@ void handle_particle_collisions(Particle* p, int particle_count)
 			if(collision_occured(normal)){
 				float impulse = calculate_impulse(p[i], p[j], normal);
 				Vector2 impulse_vector = vec2_scalar_mult(normal, impulse);
+				//this is messy, I don't like it, but it's not the point
 				vec2_add_ip(&p[i].vel, vec2_scalar_mult(impulse_vector, 1/p[i].m));
 				vec2_add_ip(&p[j].vel, vec2_scalar_mult(impulse_vector, -(1/p[j].m)));
 				handle_penetration(&p[i], &p[j], normal, scalar_dist);
