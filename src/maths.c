@@ -57,3 +57,18 @@ Vector2 vec2_sub(Vector2 a, Vector2 b)
 		a.y - b.y,
 	};
 }
+
+void vec2_scalar_mult_ip(Vector2* v, float scalar)
+{
+	v->x *= scalar;
+	v->y *= scalar;
+}
+
+Vector2 vec2_scalar_mult(Vector2 v, float scalar)
+{
+	return (Vector2)
+	{
+		v.x*scalar,
+		v.y*scalar
+	};
+}

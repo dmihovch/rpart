@@ -10,6 +10,7 @@ typedef struct {
 	Vector2 vel;
 	Vector2 acc;
 	float r;
+	float m;
 	Color color;
 }Particle;
 Particle* alloc_rand_nparticles(int n);

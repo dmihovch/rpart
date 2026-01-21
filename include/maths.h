@@ -20,4 +20,6 @@ Vector2 vec2_sub(Vector2 a, Vector2 b);
 void vec2_negate_ip(Vector2* v);
 void vec2_zero(Vector2* v);
 float vec2_dot(Vector2 a, Vector2 b);
+void vec2_scalar_mult_ip(Vector2* v, float scalar);
+Vector2 vec2_scalar_mult(Vector2 v, float scalar);
 #endif //MATHS_H

@@ -27,6 +27,7 @@ Particle create_rand_particle()
 		.vel = (Vector2){rand_float(-2.0,2.0),rand_float(-2.0,2.0)},
 		.acc = (Vector2){0,0},
 		.r = 3.,
+		.m = 10.,
 		.color = rand_color(),
 	};
 }

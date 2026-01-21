@@ -65,35 +65,70 @@ void handle_particle_collisions(Particle* p, int particle_count)
 	{
 		for(int j = i+1; j<particle_count; ++j)
 		{
-			
-			Vector2 normal = check_collisions_circles(p[i].pos, p[i].r, p[j].pos, p[j].r);
-			if(normal.x != 0 && normal.y != 0){ //collision occured
-				Vector2 relative_vel = vec2_sub(p[i].vel, p[j].vel);
-				//need to read that doc
+			float scalar_dist;	
+			Vector2 normal = check_collisions_circles(&scalar_dist,p[i].pos, p[i].r, p[j].pos, p[j].r);
+			if(collision_occured(normal)){
+				float impulse = calculate_impulse(p[i], p[j], normal);
+				vec2_scalar_mult_ip(&p[i].vel, impulse);
+				vec2_scalar_mult_ip(&p[j].vel, -impulse);
+				handle_penetration(&p[i], &p[j], normal, scalar_dist);
 			}
 		}
 	}
 }
 
-Vector2 check_collisions_circles(Vector2 apos, float ar, Vector2 bpos, float br)
+void handle_penetration(Particle* a, Particle* b,Vector2 normal, float scalar_distance)
 {
-	Vector2 delta = vec2_sub(apos, bpos);
+	float penetration_distance = a->r + b->r;
+	if(scalar_distance > 0.)
+	{
+		penetration_distance -= scalar_distance;
+	}
+	Vector2 scaled_normal = vec2_scalar_mult(normal, penetration_distance*PERCENT_CORRECTION);
+	float mass_for_a = b->m/(a->m + b->m);
+	float mass_for_b = a->m/(a->m + b->m);
+	Vector2 a_correction = vec2_scalar_mult(scaled_normal, mass_for_a);
+	Vector2 b_correction = vec2_scalar_mult(scaled_normal, mass_for_b);
+	vec2_sub_ip(&a->pos, a_correction);
+	vec2_add_ip(&b->pos, b_correction);
+}
+float calculate_impulse(Particle a, Particle b, Vector2 normal)
+{
+	Vector2 relative_vel = vec2_sub(a.vel, b.vel);
+	float relative_normal = vec2_dot(relative_vel,normal);
+	float inverse_masses = (1/a.m) + (1/b.m);
+	float neg1plusE = (-1 + ELASTICITY);
+	return (neg1plusE * relative_normal) / inverse_masses;
+}
+
+bool collision_occured(Vector2 normal)
+{
+	return (normal.x != 0 && normal.y != 0);
+}
+
+Vector2 check_collisions_circles(float* scalar_dist,Vector2 apos, float ar, Vector2 bpos, float br)
+{
+
+	*scalar_dist = -1;
+	Vector2 delta = vec2_sub(bpos, apos);
 	float distsq = vec2_dot(delta,delta);
 	float rsq = (ar+br) * (ar+br);
-	if(distsq >= rsq)
+	if(distsq > rsq)
 	{
 		return (Vector2){0,0};
 	}
 	if(distsq == 0.)
 	{
+		//not sure if I have to calculate the peenetration of this case
+		*scalar_dist = 0.;
 		return (Vector2)
 		{
-			rand_float_nonzero(-1, 1),
-			rand_float_nonzero(-1,1)
+			1,0
 		};
 	} 
 
 	float dist = sqrtf(distsq);
+	*scalar_dist = dist;
 	return (Vector2){delta.x/dist, delta.y/dist};
 }
 
