@@ -1,11 +1,18 @@
 #include "../include/maths.h"
 #include <raylib.h>
 
+float vec2_distance_squared(Vector2 a, Vector2 b)
+{
+	Vector2 delta = vec2_sub(b,a);
+	return vec2_dot(delta,delta);
+}
+
 float rand_float_nonzero(float tmin, float tmax)
 {
 	float rand = rand_float(tmin,tmax);
 	if(rand == 0.0f)
 	{
+		//lowkenually arbitrary value
 		return 0.0001;
 	}
 	return rand;

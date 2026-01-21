@@ -49,6 +49,12 @@ int main(int argc, char** argv){
 			update_particles(particles, particles_count);
 			update_end = GetTime();
 		}
+		else {
+			render_start = GetTime();
+			render_end = GetTime();
+			update_start = GetTime();
+			update_end = GetTime();
+		}
 				
 		DrawFPS(0, 0);
 

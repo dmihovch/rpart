@@ -14,6 +14,7 @@ typedef struct {
 //returns a random float [tmin,tmax]
 float rand_float(float tmin, float tmax);
 float rand_float_nonzero(float tmin, float tmax);
+float vec2_distance_squared(Vector2 a, Vector2 b);
 void vec2_add_ip(Vector2* res, Vector2 v);
 void vec2_sub_ip(Vector2* res, Vector2 v);
 Vector2 vec2_sub(Vector2 a, Vector2 b);

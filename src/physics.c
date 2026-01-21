@@ -24,6 +24,15 @@ void accumulate_forces(Particle* p, int particle_count)
 		for(int j = i + 1; j<particle_count; ++j)
 		{
 			//calculate the forces for both i and j
+			//inverse square law
+			Vector2 delta = vec2_sub(p[j].pos, p[i].pos);
+			float distsq = vec2_dot(delta, delta);
+			Vector2 rhat = vec2_scalar_mult(delta, 1/distsq);
+			float dist = sqrtf(distsq);
+			float grav_mass_dist = (GRAVITY*p[i].m*p[j].m) / distsq;
+			Vector2 force = vec2_scalar_mult(rhat, grav_mass_dist);
+			vec2_add_ip(&p[i].acc, force);
+			vec2_sub_ip(&p[j].acc, force);
 		}
 	}
 }
