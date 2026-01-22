@@ -19,6 +19,17 @@ int main(int argc, char** argv){
 		CloseWindow();
 		return 1;
 	}
+	
+	particles[0] = (Particle)
+	{
+		.pos = {WIDTH/2.,HEIGHT/2.},
+		.vel = {0,0},
+		.acc = {0,0},
+		.r = 20.,
+		.m = 10000.,
+		.color = YELLOW
+	};
+
 	double frametime_start;
 	double render_start;
 	double update_start;

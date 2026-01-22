@@ -24,7 +24,7 @@ Particle create_rand_particle()
 	return (Particle)
 	{
 		.pos = (Vector2){rand_float(0,WIDTH),rand_float(0,HEIGHT)},
-		.vel = (Vector2){rand_float(-2.0,2.0),rand_float(-2.0,2.0)},
+		.vel = (Vector2){rand_float(-20.0,20.0),rand_float(-20.0,20.0)},
 		.acc = (Vector2){0,0},
 		.r = 3.,
 		.m = 10.,

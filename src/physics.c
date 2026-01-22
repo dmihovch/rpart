@@ -41,8 +41,8 @@ void move_particles_handle_walls(Particle* p, int particle_count)
 {
 	for(int i = 0; i<particle_count; ++i)
 	{
-		vec2_add_ip(&p[i].vel,p[i].acc);
-		vec2_add_ip(&p[i].pos,p[i].vel);
+		vec2_add_ip(&p[i].vel,vec2_scalar_mult(p[i].acc, DT));
+		vec2_add_ip(&p[i].pos,vec2_scalar_mult(p[i].vel, DT));
 
 		if(p[i].pos.x + p[i].r > WIDTH)
 		{
@@ -65,7 +65,7 @@ void move_particles_handle_walls(Particle* p, int particle_count)
 			p[i].vel.y = -p[i].vel.y * ELASTICITY;
 		}
 	}
-	
+
 }
 
 void handle_particle_collisions(Particle* p, int particle_count)
