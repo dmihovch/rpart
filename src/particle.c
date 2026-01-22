@@ -26,7 +26,7 @@ Particle create_rand_particle()
 		.pos = (Vector2){rand_float(0,WIDTH),rand_float(0,HEIGHT)},
 		.vel = (Vector2){rand_float(-20.0,20.0),rand_float(-20.0,20.0)},
 		.acc = (Vector2){0,0},
-		.r = 3.,
+		.r = 10.,
 		.m = 10.,
 		.color = rand_color(),
 	};

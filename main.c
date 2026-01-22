@@ -25,7 +25,7 @@ int main(int argc, char** argv){
 		.pos = {WIDTH/2.,HEIGHT/2.},
 		.vel = {0,0},
 		.acc = {0,0},
-		.r = 20.,
+		.r = 100.,
 		.m = 10000.,
 		.color = YELLOW
 	};
