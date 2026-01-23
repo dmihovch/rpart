@@ -27,7 +27,7 @@ Particle create_rand_particle()
 		.vel = (Vector2){rand_float(-20.0,20.0),rand_float(-20.0,20.0)},
 		.acc = (Vector2){0,0},
 		.r = 5.,
-		.m = 0.001,
+		.m = .001,
 		.color = rand_color(),
 	};
 }
@@ -39,7 +39,7 @@ int realloc_rand_nparticles(Particle** p, int new_n, int old_n)
 	{
 		return 1;
 	}
-	printf("old: %d\tnew: %d\n",old_n,new_n);
+	// printf("old: %d\tnew: %d\n",old_n,new_n);
 	for(int i =	old_n; i<new_n; ++i)
 	{
 		(*p)[i] = create_rand_particle();

@@ -6,7 +6,7 @@
 #include "include/raygui.h"
 
 
-int main(int argc, char** argv){
+int main(/* int argc, char** argv */){
 	InitWindow(WIDTH, HEIGHT, "Particle Simulation [ NAIVE ]");
 	if(!IsWindowReady())
 	{
@@ -51,6 +51,10 @@ int main(int argc, char** argv){
 		if(new_particle_count > particle_count)
 		{
 			err = realloc_rand_nparticles(&particles,new_particle_count,particle_count);
+			if(err)
+			{
+				break;
+			}
 		}
 
 		if(new_particle_count != particle_count)
@@ -63,7 +67,7 @@ int main(int argc, char** argv){
 
 		frametime_start = GetTime();
 		BeginDrawing();
-		ClearBackground(GRAY);
+		ClearBackground(BLACK);
 		if(running)
 		{
 			render_start = GetTime();
@@ -86,8 +90,9 @@ int main(int argc, char** argv){
 		frametime_end = GetTime();
 		
 		draw_diagnostics(frametime_start, frametime_end, render_start, render_end, update_start, update_end);
-		draw_options(&gui_particles);
-		GuiCheckBox((Rectangle){WIDTH-50,50,50,50},"Pause",&running);
+		// draw_options(&gui_particles);
+		GuiSliderBar((Rectangle){100,175,100,25}, "N-Particles",TextFormat("%d",(int)gui_particles),&gui_particles,1,3000);
+		GuiCheckBox((Rectangle){WIDTH-100,100,25,25},"Pause",&running);
 		EndDrawing();
 
 

@@ -37,19 +37,15 @@ int draw_diagnostics(double frametime_start, double frametime_end, double render
 		char ov_buf[ov_len];
 		snprintf(ov_buf,ov_len,CLITERAL(overhead), over );
 
-		DrawText(ftbuf,10,30,22,BLACK);
-		DrawText(rebuf,10,60,22,BLACK);
-		DrawText(upbuf,10,90,22,BLACK);
-		DrawText(ov_buf,10,120,22,BLACK);
+		DrawText(ftbuf,10,30,22,WHITE);
+		DrawText(rebuf,10,60,22,WHITE);
+		DrawText(upbuf,10,90,22,WHITE);
+		DrawText(ov_buf,10,120,22,WHITE);
 
 
 		return 0;
 }
 
-void draw_options(float* nparticles)
-{
-	GuiSliderBar((Rectangle){10,150,100,25}, "N-Particles",TextFormat("%d",*nparticles),nparticles,1,3000);
-}
 
 
 
