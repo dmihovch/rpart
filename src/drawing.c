@@ -45,3 +45,12 @@ int draw_diagnostics(double frametime_start, double frametime_end, double render
 
 		return 0;
 }
+
+void draw_options(int nparticles)
+{
+	const char* particles_raw = "Particles: %d (-|+)";
+	int pr_len = strlen(particles_raw) + 10;
+	char pr_buf[pr_len];
+	snprintf(pr_buf,pr_len,CLITERAL(particles_raw),nparticles);
+	DrawText(pr_buf,10,150,22,BLACK);
+}
