@@ -10,6 +10,7 @@ typedef struct {
 	Vector2 pos;
 	Vector2 vel;
 	Vector2 acc;
+	Vector2 old_acc;
 	float r;
 	float m;
 	Color color;
