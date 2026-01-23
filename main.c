@@ -2,6 +2,8 @@
 #include "include/particle.h"
 #include "include/physics.h"
 #include <raylib.h>
+#define RAYGUI_IMPLEMENTATION
+#include "include/raygui.h"
 
 
 int main(int argc, char** argv){
@@ -11,11 +13,12 @@ int main(int argc, char** argv){
 		return 1;
 	}
 	srand(time(NULL));
-	int cur_particles = 100;
-	int new_particles;
+	int particle_count = 100;
+	int new_particle_count;
+	float gui_particles = particle_count;
 
 
-	Particle* particles = alloc_rand_nparticles(cur_particles);
+	Particle* particles = alloc_rand_nparticles(particle_count);
 	if(particles == NULL){
 		CloseWindow();
 		return 1;
@@ -43,29 +46,20 @@ int main(int argc, char** argv){
 	int err;
 	while(!WindowShouldClose() && GetKeyPressed() != KEY_Q)
 	{
-		if(IsKeyPressed(KEY_P))
-		{
-			running = !running;
-			printf("toggled\n");
-		}
-		if(IsKeyPressed(KEY_MINUS))
-		{
-			cur_particles = cur_particles-100;
-			printf("--\n");
 
+		new_particle_count = (int)gui_particles;
+		if(new_particle_count > particle_count)
+		{
+			err = realloc_rand_nparticles(&particles,new_particle_count,particle_count);
+		}
+
+		if(new_particle_count != particle_count)
+		{
+			particle_count = new_particle_count;	
+		}
+	
 			// realloc_nparticles(p, particles_count, particles_count+5);
 			// might handle this more gracefully later, but for now we can just not render and compute the particles that are 'removed'
-		}
-		if(IsKeyPressed(KEY_EQUAL))
-		{
-			new_particles = cur_particles + 100;
-			err = realloc_rand_nparticles(&particles,new_particles,cur_particles);
-			if(err)
-			{
-				break;
-			}
-			cur_particles = new_particles;
-		}
 
 		frametime_start = GetTime();
 		BeginDrawing();
@@ -73,11 +67,11 @@ int main(int argc, char** argv){
 		if(running)
 		{
 			render_start = GetTime();
-			draw_particles(particles, cur_particles);
+			draw_particles(particles, particle_count);
 			render_end = GetTime();
 
 			update_start = GetTime();
-			update_particles(particles, cur_particles);
+			update_particles(particles, particle_count);
 			update_end = GetTime();
 		}
 		else {
@@ -92,8 +86,10 @@ int main(int argc, char** argv){
 		frametime_end = GetTime();
 		
 		draw_diagnostics(frametime_start, frametime_end, render_start, render_end, update_start, update_end);
-		draw_options(cur_particles);
+		draw_options(&gui_particles);
+		GuiCheckBox((Rectangle){WIDTH-50,50,50,50},"Pause",&running);
 		EndDrawing();
+
 
 	}
 

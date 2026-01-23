@@ -3,9 +3,10 @@
 #include "particle.h"
 #include <string.h>
 #include <stdio.h>
+#include "raygui.h"
 
 void draw_particles(Particle* p, int n);
 int draw_diagnostics(double frametime_start, double frametime_end, double render_start, double render_end, double update_start, double update_end);
-void draw_options(int nparticles);
+void draw_options(float* nparticles);
 
 #endif //DRAWING_H
