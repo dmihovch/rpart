@@ -51,7 +51,7 @@ int main(/* int argc, char** argv */){
 	double frametime_end;
 	double render_end;
 	double update_end;
-	int rendered_particles;
+	int rendered_particles = opts.nparticles;
 	bool running = true;
 	SetTargetFPS(FPS);
 	int err;
@@ -106,6 +106,7 @@ int main(/* int argc, char** argv */){
 		
 		draw_diagnostics(frametime_start, frametime_end, render_start, render_end, update_start, update_end);
 		draw_gui(&opts);
+		printf("here again\n");
 		EndDrawing();
 		printf("end loop\n");
 

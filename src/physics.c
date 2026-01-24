@@ -5,7 +5,6 @@
 
 void update_particles(Particle* p, Options opts)
 {
-
 	reset_accelerations(p,opts);
 	accumulate_forces(p,opts);
 	move_particles_handle_walls(p,opts);
