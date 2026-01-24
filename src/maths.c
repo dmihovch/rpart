@@ -39,6 +39,15 @@ void vec2_add_ip(Vector2* res, Vector2 v)
 	res->y += v.y;
 }
 
+Vector2 vec2_add(Vector2 a, Vector2 b)
+{
+	return (Vector2)
+	{
+		a.x + b.x,
+		a.y + b.y
+	};
+}
+
 void vec2_sub_ip(Vector2 *res, Vector2 v)
 {
 	res->x -= v.x;
