@@ -45,6 +45,8 @@ int main(/* int argc, char** argv */){
 		.color = YELLOW
 	};
 
+	init_accelerations(particles, particle_count);
+
 	double frametime_start;
 	double render_start;
 	double update_start;

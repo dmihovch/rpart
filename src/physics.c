@@ -2,24 +2,59 @@
 #include <raylib.h>
 
 
-
-void update_particles(Particle* p, Options opts)
-{
-	reset_accelerations(p,opts);
-	accumulate_forces(p,opts);
-	move_particles_handle_walls(p,opts);
-	handle_particle_collisions(p,opts);
+void update_particles(Particle* p, int particle_count){
+	move_particles_handle_walls(p,particle_count);
+	handle_particle_collisions(p,particle_count);
+	reset_accelerations(p,particle_count);
+	accumulate_forces(p,particle_count);
+	update_velocities(p,particle_count);
 }
 
 void reset_accelerations(Particle* p, Options opts)
 {
 	for(int i = 0; i<opts.nparticles; ++i)
 	{
+		p[i].old_acc = p[i].acc;
 		vec2_zero(&p[i].acc);
 	}
 }
 
-void accumulate_forces(Particle* p, Options opts)
+
+void init_accelerations(Particle* p, int particle_count)
+{
+	for(int i = 0; i<particle_count; ++i)
+	{
+		for(int j = i + 1; j<particle_count; ++j)
+		{
+			//calculate the forces for both i and j
+			//inverse square law
+			Vector2 delta = vec2_sub(p[j].pos, p[i].pos);
+			float distsq = vec2_dot(delta, delta);
+			float dist = sqrtf(distsq);
+			Vector2 rhat = vec2_scalar_mult(delta, 1/dist);
+			float grav_mass_dist = (GRAVITY*p[i].m*p[j].m) / distsq;
+			Vector2 force = vec2_scalar_mult(rhat, grav_mass_dist);
+			Vector2 force_mass_pofi = vec2_scalar_mult(force, 1/p[i].m);
+			Vector2 force_mass_pofj = vec2_scalar_mult(force, 1/p[j].m);
+			vec2_add_ip(&p[i].old_acc, force_mass_pofi);
+			vec2_sub_ip(&p[j].old_acc, force_mass_pofj);
+		}
+	}
+
+}
+
+void update_velocities(Particle* p,int particle_count)
+{
+	float half_dt = DT/2.;
+	for(int i = 0; i<particle_count; ++i)
+	{
+		Vector2 combined_accs = vec2_add(p[i].acc, p[i].old_acc);
+		Vector2 combaccs_div_halfdt = vec2_scalar_mult(combined_accs, half_dt);
+		vec2_add_ip(&p[i].vel, combaccs_div_halfdt);
+	}
+}
+
+void accumulate_forces(Particle* p, int particle_count)
 {
 	for(int i = 0; i<opts.nparticles; ++i)
 	{
@@ -45,34 +80,40 @@ void move_particles_handle_walls(Particle* p, Options opts)
 {
 	for(int i = 0; i<opts.nparticles; ++i)
 	{
-		vec2_add_ip(&p[i].vel,vec2_scalar_mult(p[i].acc, opts.timestep));
-		vec2_add_ip(&p[i].pos,vec2_scalar_mult(p[i].vel, opts.timestep));
-
-		if(p[i].pos.x + p[i].r > WIDTH)
-		{
-			p[i].pos.x = WIDTH - p[i].r;
-			p[i].vel.x = -p[i].vel.x * ELASTICITY;
-		}
-		else if(p[i].pos.x - p[i].r < 0)
-		{
-			p[i].pos.x = p[i].r;
-			p[i].vel.x = -p[i].vel.x * ELASTICITY;
-		}
-		if(p[i].pos.y + p[i].r > HEIGHT)
-		{
-			p[i].pos.y = HEIGHT - p[i].r;
-			p[i].vel.y = -p[i].vel.y * ELASTICITY;
-		}
-		else if(p[i].pos.y - p[i].r < 0)
-		{
-			p[i].pos.y = p[i].r;
-			p[i].vel.y = -p[i].vel.y * ELASTICITY;
-		}
+		float dtsq = DT*DT;		
+		Vector2 half_acc_dtsq = vec2_scalar_mult(vec2_scalar_mult(p[i].acc, dtsq),1/2.);
+		Vector2 vel_dt = vec2_scalar_mult(p[i].vel, DT);
+		Vector2 vel_acc = vec2_add(vel_dt,half_acc_dtsq);
+		vec2_add_ip(&p[i].pos, vel_acc);
+		handle_wall_collision(p,i);
 	}
 
 }
 
-void handle_particle_collisions(Particle* p, Options opts)
+void handle_wall_collision(Particle* p, int i)
+{
+	if(p[i].pos.x + p[i].r > WIDTH)
+	{
+		p[i].pos.x = WIDTH - p[i].r;
+		p[i].vel.x = -p[i].vel.x * ELASTICITY;
+	}
+	else if(p[i].pos.x - p[i].r < 0)
+	{
+		p[i].pos.x = p[i].r;
+		p[i].vel.x = -p[i].vel.x * ELASTICITY;
+	}
+	if(p[i].pos.y + p[i].r > HEIGHT)
+	{
+		p[i].pos.y = HEIGHT - p[i].r;
+		p[i].vel.y = -p[i].vel.y * ELASTICITY;
+	}
+	else if(p[i].pos.y - p[i].r < 0)
+	{
+		p[i].pos.y = p[i].r;
+		p[i].vel.y = -p[i].vel.y * ELASTICITY;
+	}
+}
+void handle_particle_collisions(Particle* p, int particle_count)
 {
 	for(int i = 0; i < opts.nparticles; ++i)
 	{

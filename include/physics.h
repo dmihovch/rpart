@@ -24,5 +24,8 @@ void handle_particle_collisions(Particle* p, Options opts);
 Vector2 check_collisions_circles(float* scalar_dist,Vector2 apos, float ar, Vector2 bpos, float br);
 float calculate_impulse(Particle a, Particle b, Vector2 normal);
 bool collision_occured(Vector2 normal);
+void init_accelerations(Particle* p, int particle_count);
 void handle_penetration(Particle* a, Particle* b,Vector2 normal, float scalar_distance);
+void update_velocities(Particle* p,int particle_count);
+void handle_wall_collision(Particle* p, int i);
 #endif //PHYSICS_H
