@@ -1,10 +1,23 @@
+#define RAYGUI_IMPLEMENTATION
 #include "include/drawing.h"
 #include "include/particle.h"
 #include "include/physics.h"
 #include <raylib.h>
-#define RAYGUI_IMPLEMENTATION
-#include "include/raygui.h"
 
+/*
+ *
+ *
+ * Things i want control of:
+ * particle count
+ * gravity
+ * timestep
+ *
+ *
+ * 
+ *
+ *
+ *
+ * */
 
 int main(/* int argc, char** argv */){
 	InitWindow(WIDTH, HEIGHT, "Particle Simulation [ NAIVE ]");
@@ -13,12 +26,10 @@ int main(/* int argc, char** argv */){
 		return 1;
 	}
 	srand(time(NULL));
-	int particle_count = 100;
-	int new_particle_count;
-	float gui_particles = particle_count;
 
+	Options opts = {10.,DEFAULT_GRAVITY, DEFAULT_DT};
 
-	Particle* particles = alloc_rand_nparticles(particle_count);
+	Particle* particles = alloc_rand_nparticles((int)opts.nparticles);
 	if(particles == NULL){
 		CloseWindow();
 		return 1;
@@ -40,43 +51,47 @@ int main(/* int argc, char** argv */){
 	double frametime_end;
 	double render_end;
 	double update_end;
-	
+	int rendered_particles;
 	bool running = true;
 	SetTargetFPS(FPS);
 	int err;
 	while(!WindowShouldClose() && GetKeyPressed() != KEY_Q)
 	{
-
-		new_particle_count = (int)gui_particles;
-		if(new_particle_count > particle_count)
+		printf("start loop\n");
+		frametime_start = GetTime();
+		Options sopts = opts;
+		printf("in main: %d\t%d\n",(int)sopts.nparticles,rendered_particles);
+		if((int)sopts.nparticles > rendered_particles)
 		{
-			err = realloc_rand_nparticles(&particles,new_particle_count,particle_count);
-			if(err)
+			printf("%d\t%d\n",(int)sopts.nparticles,rendered_particles);
+			particles = realloc_rand_nparticles(particles,(int)sopts.nparticles,rendered_particles);
+			if(particles == NULL)
 			{
 				break;
 			}
 		}
 
-		if(new_particle_count != particle_count)
+		if((int)sopts.nparticles != rendered_particles)
 		{
-			particle_count = new_particle_count;	
+			rendered_particles = (int)sopts.nparticles;	
 		}
+
 	
 			// realloc_nparticles(p, particles_count, particles_count+5);
 			// might handle this more gracefully later, but for now we can just not render and compute the particles that are 'removed'
 
-		frametime_start = GetTime();
 		BeginDrawing();
 		ClearBackground(BLACK);
 		if(running)
 		{
 			render_start = GetTime();
-			draw_particles(particles, particle_count);
+			draw_particles(particles, (int)sopts.nparticles);
 			render_end = GetTime();
 
 			update_start = GetTime();
-			update_particles(particles, particle_count);
+			update_particles(particles, sopts);
 			update_end = GetTime();
+
 		}
 		else {
 			render_start = GetTime();
@@ -90,11 +105,9 @@ int main(/* int argc, char** argv */){
 		frametime_end = GetTime();
 		
 		draw_diagnostics(frametime_start, frametime_end, render_start, render_end, update_start, update_end);
-		// draw_options(&gui_particles);
-		GuiSliderBar((Rectangle){100,175,100,25}, "N-Particles",TextFormat("%d",(int)gui_particles),&gui_particles,1,3000);
-		GuiCheckBox((Rectangle){WIDTH-100,100,25,25},"Pause",&running);
+		draw_gui(&opts);
 		EndDrawing();
-
+		printf("end loop\n");
 
 	}
 

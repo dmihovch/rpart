@@ -2,26 +2,29 @@
 #include <raylib.h>
 
 
-void update_particles(Particle* p, int particle_count){
-	reset_accelerations(p,particle_count);
-	accumulate_forces(p,particle_count);
-	move_particles_handle_walls(p,particle_count);
-	handle_particle_collisions(p,particle_count);
+
+void update_particles(Particle* p, Options opts)
+{
+
+	reset_accelerations(p,opts);
+	accumulate_forces(p,opts);
+	move_particles_handle_walls(p,opts);
+	handle_particle_collisions(p,opts);
 }
 
-void reset_accelerations(Particle* p, int particle_count)
+void reset_accelerations(Particle* p, Options opts)
 {
-	for(int i = 0; i<particle_count; ++i)
+	for(int i = 0; i<opts.nparticles; ++i)
 	{
 		vec2_zero(&p[i].acc);
 	}
 }
 
-void accumulate_forces(Particle* p, int particle_count)
+void accumulate_forces(Particle* p, Options opts)
 {
-	for(int i = 0; i<particle_count; ++i)
+	for(int i = 0; i<opts.nparticles; ++i)
 	{
-		for(int j = i + 1; j<particle_count; ++j)
+		for(int j = i + 1; j<opts.nparticles; ++j)
 		{
 			//calculate the forces for both i and j
 			//inverse square law
@@ -29,7 +32,7 @@ void accumulate_forces(Particle* p, int particle_count)
 			float distsq = vec2_dot(delta, delta);
 			float dist = sqrtf(distsq);
 			Vector2 rhat = vec2_scalar_mult(delta, 1/dist);
-			float grav_mass_dist = (GRAVITY*p[i].m*p[j].m) / distsq;
+			float grav_mass_dist = (opts.gravity*p[i].m*p[j].m) / distsq;
 			Vector2 force = vec2_scalar_mult(rhat, grav_mass_dist);
 			Vector2 force_mass_pofi = vec2_scalar_mult(force, 1/p[i].m);
 			Vector2 force_mass_pofj = vec2_scalar_mult(force, 1/p[j].m);
@@ -39,12 +42,12 @@ void accumulate_forces(Particle* p, int particle_count)
 	}
 }
 
-void move_particles_handle_walls(Particle* p, int particle_count)
+void move_particles_handle_walls(Particle* p, Options opts)
 {
-	for(int i = 0; i<particle_count; ++i)
+	for(int i = 0; i<opts.nparticles; ++i)
 	{
-		vec2_add_ip(&p[i].vel,vec2_scalar_mult(p[i].acc, DT));
-		vec2_add_ip(&p[i].pos,vec2_scalar_mult(p[i].vel, DT));
+		vec2_add_ip(&p[i].vel,vec2_scalar_mult(p[i].acc, opts.timestep));
+		vec2_add_ip(&p[i].pos,vec2_scalar_mult(p[i].vel, opts.timestep));
 
 		if(p[i].pos.x + p[i].r > WIDTH)
 		{
@@ -70,11 +73,11 @@ void move_particles_handle_walls(Particle* p, int particle_count)
 
 }
 
-void handle_particle_collisions(Particle* p, int particle_count)
+void handle_particle_collisions(Particle* p, Options opts)
 {
-	for(int i = 0; i < particle_count; ++i)
+	for(int i = 0; i < opts.nparticles; ++i)
 	{
-		for(int j = i+1; j<particle_count; ++j)
+		for(int j = i+1; j<opts.nparticles; ++j)
 		{
 			float scalar_dist;	
 			Vector2 normal = check_collisions_circles(&scalar_dist,p[i].pos, p[i].r, p[j].pos, p[j].r);
