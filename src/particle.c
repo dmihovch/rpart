@@ -35,18 +35,10 @@ Particle create_rand_particle()
 
 Particle* realloc_rand_nparticles(Particle* p, int new_n, int old_n)
 {
-	Particle tmp[old_n];
-	memcpy(tmp,p,old_n);
-
 	Particle* new_p  = (Particle*)realloc(p,new_n*sizeof(Particle));
 	if(new_p == NULL)
 	{
 		return NULL;
-	}
-	// printf("old: %d\tnew: %d\n",old_n,new_n);
-	for(int i =	0; i<old_n-1; ++i)
-	{
-		new_p[i] = tmp[i];
 	}
 	for(int i = old_n; i<new_n; ++i)
 	{
