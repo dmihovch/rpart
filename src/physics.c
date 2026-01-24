@@ -10,9 +10,9 @@ void update_particles(Particle* p, int particle_count){
 	update_velocities(p,particle_count);
 }
 
-void reset_accelerations(Particle* p, int particle_count)
+void reset_accelerations(Particle* p, Options opts)
 {
-	for(int i = 0; i<particle_count; ++i)
+	for(int i = 0; i<opts.nparticles; ++i)
 	{
 		p[i].old_acc = p[i].acc;
 		vec2_zero(&p[i].acc);
@@ -56,9 +56,9 @@ void update_velocities(Particle* p,int particle_count)
 
 void accumulate_forces(Particle* p, int particle_count)
 {
-	for(int i = 0; i<particle_count; ++i)
+	for(int i = 0; i<opts.nparticles; ++i)
 	{
-		for(int j = i + 1; j<particle_count; ++j)
+		for(int j = i + 1; j<opts.nparticles; ++j)
 		{
 			//calculate the forces for both i and j
 			//inverse square law
@@ -66,7 +66,7 @@ void accumulate_forces(Particle* p, int particle_count)
 			float distsq = vec2_dot(delta, delta);
 			float dist = sqrtf(distsq);
 			Vector2 rhat = vec2_scalar_mult(delta, 1/dist);
-			float grav_mass_dist = (GRAVITY*p[i].m*p[j].m) / distsq;
+			float grav_mass_dist = (opts.gravity*p[i].m*p[j].m) / distsq;
 			Vector2 force = vec2_scalar_mult(rhat, grav_mass_dist);
 			Vector2 force_mass_pofi = vec2_scalar_mult(force, 1/p[i].m);
 			Vector2 force_mass_pofj = vec2_scalar_mult(force, 1/p[j].m);
@@ -76,9 +76,9 @@ void accumulate_forces(Particle* p, int particle_count)
 	}
 }
 
-void move_particles_handle_walls(Particle* p, int particle_count)
+void move_particles_handle_walls(Particle* p, Options opts)
 {
-	for(int i = 0; i<particle_count; ++i)
+	for(int i = 0; i<opts.nparticles; ++i)
 	{
 		float dtsq = DT*DT;		
 		Vector2 half_acc_dtsq = vec2_scalar_mult(vec2_scalar_mult(p[i].acc, dtsq),1/2.);
@@ -115,9 +115,9 @@ void handle_wall_collision(Particle* p, int i)
 }
 void handle_particle_collisions(Particle* p, int particle_count)
 {
-	for(int i = 0; i < particle_count; ++i)
+	for(int i = 0; i < opts.nparticles; ++i)
 	{
-		for(int j = i+1; j<particle_count; ++j)
+		for(int j = i+1; j<opts.nparticles; ++j)
 		{
 			float scalar_dist;	
 			Vector2 normal = check_collisions_circles(&scalar_dist,p[i].pos, p[i].r, p[j].pos, p[j].r);

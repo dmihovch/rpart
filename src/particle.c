@@ -33,19 +33,26 @@ Particle create_rand_particle()
 	};
 }
 
-int realloc_rand_nparticles(Particle** p, int new_n, int old_n)
+Particle* realloc_rand_nparticles(Particle* p, int new_n, int old_n)
 {
-	*p = (Particle*)realloc(*p,new_n*sizeof(Particle));
-	if(*p == NULL)
+	Particle tmp[old_n];
+	memcpy(tmp,p,old_n);
+
+	Particle* new_p  = (Particle*)realloc(p,new_n*sizeof(Particle));
+	if(new_p == NULL)
 	{
-		return 1;
+		return NULL;
 	}
 	// printf("old: %d\tnew: %d\n",old_n,new_n);
-	for(int i =	old_n; i<new_n; ++i)
+	for(int i =	0; i<old_n-1; ++i)
 	{
-		(*p)[i] = create_rand_particle();
+		new_p[i] = tmp[i];
 	}
-	return 0;
+	for(int i = old_n; i<new_n; ++i)
+	{
+		new_p[i] = create_rand_particle();
+	}
+	return new_p;
 }
 
 
